@@ -6,9 +6,19 @@
     "deploy": "wrangler deploy",
     "start": "wrangler dev"
   },
+  "dependencies": {
+    "@graphql-hive/core": "^0.2.3",
+    "graphql": "^16.7.1",
+    "graphql-yoga": "^4.0.3",
+    "workers-loki-logger": "^0.1.15",
+    "zod": "^3.21.4"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230419.0",
     "typescript": "^5.0.4",
     "wrangler": "^3.0.0"
+  },
+  "browser": {
+    "crypto": false
   }
 }
