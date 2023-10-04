@@ -2,14 +2,14 @@ name = "ryze-proxy"
 main = "src/index.ts"
 compatibility_date = "2023-10-02"
 
-account_id = "0330758a48cf3571c1829bb472f195ac"
+account_id = "544264846a6beda5c5640abf8b2d08e1"
 compatibility_flags= ["nodejs_compat"]
 logpush = false
 
 # Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
 # Docs: https://developers.cloudflare.com/workers/runtime-apis/kv
 kv_namespaces = [
-  { binding = "ryze_proxy_test", id = "409a1afd6de24e468918bbaca21de481", preview_id = "409a1afd6de24e468918bbaca21de481" }
+  { binding = "ryze_proxy_test", id = "7210cc5fb69f4f6c90f0fef963535f9c", preview_id = "7210cc5fb69f4f6c90f0fef963535f9c" }
 ]
 
 analytics_engine_datasets = [
