@@ -209,29 +209,34 @@ export const remoteExecutor: Plugin<{
     console.log("cacher key", cacheKey);
     logger.mdcSet("cacheKey", cacheKey);
 
-    const cachedData = await store.get(cacheKey);
+    try {
+      const cachedData = await store.get(cacheKey);
 
-    if (cachedData) {
-      logger.info("Cache hit");
-      args.contextValue.analytics.track({
-        type: "key-usage",
-        value: {
-          type: "cache-hit",
-          key: cacheKey,
-          operationName: args.operationName,
-          service: serviceType,
-          name,
-          identifier,
-          country: request?.cf?.country || null,
-          city: request?.cf?.city || null,
-          latitude: request?.cf?.latitude || null,
-          longitude: request?.cf?.longitude || null,
-          version: "v1",
-        },
-      });
-      return setResultAndStopExecution(
-        cachedData.data as any // I trust me.
-      );
+      if (cachedData) {
+        logger.info("Cache hit");
+        args.contextValue.analytics.track({
+          type: "key-usage",
+          value: {
+            type: "cache-hit",
+            key: cacheKey,
+            operationName: args.operationName,
+            service: serviceType,
+            name,
+            identifier,
+            country: request?.cf?.country || null,
+            city: request?.cf?.city || null,
+            latitude: request?.cf?.latitude || null,
+            longitude: request?.cf?.longitude || null,
+            version: "v1",
+          },
+        });
+        return setResultAndStopExecution(
+          cachedData.data as any // I trust me.
+        );
+      }
+
+    } catch (err) {
+      logger.warn(JSON.stringify(err));
     }
 
     const payload = JSON.stringify({
@@ -247,13 +252,17 @@ export const remoteExecutor: Plugin<{
       body: payload,
     });
     const data = await res.json();
+    try {
+      await store.set(cacheKey, {
+        endpoint,
+        operation: normalizedOp,
+        data,
+        variables,
+      });
 
-    await store.set(cacheKey, {
-      endpoint,
-      operation: normalizedOp,
-      data,
-      variables,
-    });
+    } catch (err) {
+      logger.warn(JSON.stringify(err))
+    }
 
     args.contextValue.analytics.track({
       type: "key-usage",
